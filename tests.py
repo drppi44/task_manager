@@ -80,9 +80,8 @@ class ManagerTest(TestCase):
     def _test_load_diff(self):
         manager = TaskManager()
         min_load = min(manager.employees, key=lambda emp: emp.load).load
-        for employee in manager.employees:
-            self.assertLessEqual(employee.load - min_load,
-                                 self.max_complexity + 1)
+        max_load = max(manager.employees, key=lambda emp: emp.load).load
+        self.assertLessEqual(max_load - min_load, self.max_complexity)
 
     def test_manager_is_singleton(self):
         manager1 = TaskManager()
