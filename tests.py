@@ -5,7 +5,7 @@ from random import randint
 
 class TaskTest(TestCase):
     def test_task_contains_its_data(self):
-        data = {'name': 'anytank', 'complexity': 2}
+        data = {'name': 'anytask', 'complexity': 2}
         task = Task(**data)
 
         self.assertEqual(task.name, data['name'])
@@ -68,12 +68,12 @@ class ManagerTest(TestCase):
     def _create_tasks(self, count):
         manager = TaskManager()
         for i in range(count):
-            manager.create_empoyee('employee_%d' % i,
-                                   randint(1, self.max_complexity))
+            manager.create_task('task_%d' % i,
+                                randint(1, self.max_complexity))
 
     def _create_employees(self, count):
         manager = TaskManager()
-        for i in range(10):
+        for i in range(count):
             manager.create_empoyee('employee_%d' % i,
                                    randint(1, self.max_complexity))
 
@@ -81,6 +81,7 @@ class ManagerTest(TestCase):
         manager = TaskManager()
         min_load = min(manager.employees, key=lambda emp: emp.load).load
         max_load = max(manager.employees, key=lambda emp: emp.load).load
+        print min_load, max_load
         self.assertLessEqual(max_load - min_load, self.max_complexity)
 
     def test_manager_is_singleton(self):
@@ -117,10 +118,10 @@ class ManagerTest(TestCase):
         self.assertEqual(manager.tasks[0].name, data['name'])
         self.assertEqual(manager.tasks[0].complexity, data['complexity'])
 
-    def test_manager(self):
+    def test_manage(self):
         manager = TaskManager()
         self._create_employees(10)
-        self._create_tasks(100 * 10)
+        self._create_tasks(100*10)
         manager.manage()
 
         self._test_load_diff()
@@ -132,12 +133,13 @@ class ManagerTest(TestCase):
         manager.manage()
         self._test_load_diff()
 
-        self._create_employees(10)
+        self._create_employees(5)
         self._create_tasks(100 * 10)
         manager.manage()
         self._test_load_diff()
 
         self._create_employees(5)
         self._create_tasks(100 * 15)
+        manager.manage()
         self._test_load_diff()
 
